@@ -48,14 +48,14 @@ stargazin(c~p) -> stargazin(c~u) @ 0.02
 %mod: ([T] > 1200) && ([T] < 1200 + 'TCa') do $UPDATE 'kCa' 1000
 %mod: [T] > (1200 + 'TCa') do $UPDATE 'kCa' 0
 
-%var: 'Phos CamKII' |CaMKII(s~p)|
-%obs: 'CaM-UnphosCamKII' |CaM(ck!1),CaMKII(s~u!1)|
+%var: 'Phos CaMKII' |CaMKII(s~p)|
+%obs: 'CaM-UnphosCaMKII' |CaM(ck!1),CaMKII(s~u!1)|
 %var: 'Phos stargazin' |stargazin(c~p)|
 %var: 'stargazin-PSD95' |stargazin(c~p!1), PSD95(pdz1!1)|
 %obs: 'CaM' |CaM(ck)|
 %obs: 'Ca' |Ca(cam)|
 
-%plot: 'Phos CamKII'
+%plot: 'Phos CaMKII'
 %plot: 'Phos stargazin'
 %plot: 'stargazin-PSD95'
 

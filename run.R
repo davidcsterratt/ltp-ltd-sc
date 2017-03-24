@@ -30,7 +30,12 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10) {
                           do.call(cbind,
                                   lapply(kasim,
                                          function(x) {return(x[,"stargazin-PSD95"])}))/10*100)
-  return(list(kasim=kasim, stg.psd95=stg.psd95))
+  PhosCaMKII <- data.frame(time=kasim[[1]][,"[T]"]/60 - 20,
+                           do.call(cbind,
+                                   lapply(kasim,
+                                          function(x) {return(x[,"Phos CaMKII"])}))/10*100)
+
+  return(list(kasim=kasim, stg.psd95=stg.psd95, PhosCaMKII=PhosCaMKII))
 }
                        
 ## Plot simulations
@@ -54,9 +59,15 @@ sims.c <- run.kasims(c("par-c.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.c$stg.psd95, add=TRUE, hue=0.5)
 
 #matplot(select(dat, time), select(dat, -time), pch=19, ylim=c(0, 200))
-
 # plot.kasim(sims[[1]])
 
+x11()
+par(mfcol=c(2, 2),
+    mar=c(2.4, 3, 1.5, 0.5),
+    mgp=c(1.3, 0.4, 0))
+plot.ts(sims.a$PhosCaMKII)
+plot.ts(sims.b$PhosCaMKII)
+plot.ts(sims.c$PhosCaMKII)
 
 
 
