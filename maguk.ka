@@ -1,0 +1,57 @@
+%agent: PSD95(pdz1, sh3, gk)
+%agent: PSD93(pdz1, sh3, gk)
+%agent: stargazin(c~u~p)
+%agent: CaMKII(s~u~p)
+%agent: CaM(ck)
+
+## Phosphorylation of CaMKII by CaM
+CaM(ck), CaMKII(s) <-> CaM(ck!1), CaMKII(s!1) @ 10, 0.01
+
+CaM(ck!1), CaMKII(s~u!1) -> CaM(ck!1), CaMKII(s~p!1) @ 100
+
+CaMKII(s~p?) -> CaMKII(s~u) @ 0.005
+
+CaM() -> @ 0.01
+
+## Phosphorylation of stargazin by phosphorlylated CaMKII
+CaMKII(s~p), stargazin(c~u) ->  CaMKII(s~p), stargazin(c~p) @ 0.0001
+
+## Binding of phosphorylated stargazin to PSD-95
+stargazin(c~p), PSD95(pdz1) <-> stargazin(c~p!1), PSD95(pdz1!1) @ 1, 0.005
+
+## Binding of phosphorylated stargazin to PSD-93
+stargazin(c~p), PSD93(pdz1) <-> stargazin(c~p!1), PSD93(pdz1!1) @ 1, 0.01
+
+## Dephosphorylyation of unbound stargazin
+stargazin(c~p) -> stargazin(c~u) @ 0.02
+
+%init: 0 CaM()
+%init: 100 CaMKII(s~u) 
+%init:  10 stargazin() 
+%init:  10 PSD95() 
+%init:  10 stargazin(c~p!1), PSD95(pdz1!1)
+
+%mod: [T] > 1200 do $ADD 10 CaM()
+
+%var: 'Phos CamKII' |CaMKII(s~p)|
+%obs: 'CaM-UnphosCamKII' |CaM(ck!1),CaMKII(s~u!1)|
+%var: 'Phos stargazin' |stargazin(c~p)|
+%var: 'stargazin-PSD95' |stargazin(c~p!1), PSD95(pdz1!1)|
+%obs: 'CaM' |CaM(ck)|
+
+%plot: 'Phos CamKII'
+%plot: 'Phos stargazin'
+%plot: 'stargazin-PSD95'
+
+# 'PDZ1_stargazin_PSD95'PSD95(pdz1,pdz2!_),stargazin(c~u) <-> PSD95(pdz1!0,pdz2!_),stargazin(c~u!0)  @ 0.00255390325543199 , 0.0381606323421001
+
+
+## Phosphorylated stargazin binds to PSD95 and is thus incorporated in a synapse
+# 'PDZ1_stargazin_PSD95' PSD95(pdz1,pdz2!_),stargazin(c~p) -> PSD95(PDZ1!0,PDZ2!_),stargazin(c~p!0) @ 0.00255390325543199
+# 'PDZ1_stargazin_PSD95_diss' PSD95(pdz1!0,pdz2!_),stargazin(c~p!0) -> PSD95(pdz1,pdz2!_),stargazin(c~p) @ 0.0381606323421001
+
+## Phosphorylated stargazin binds to PSD93 too, but more slowly and
+## with greater affinity. Thus if PSD95 is missing more PSD5 will be
+## located at the synapse
+# 'PDZ1_stargazin_PSD93' PSD93(pdz1,pdz2!_),stargazin(c~p) -> PSD93(pdz1!0,pdz2!_),stargazin(c~u!0) @ 0.00255390325543199
+# 'PDZ1_stargazin_PSD93_diss' PSD93(pdz1!0,pdz2!_),stargazin(c~u!0) -> PSD93(pdz1,pdz2!_),stargazin(c~u) @ 0.0381606323421001
