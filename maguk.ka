@@ -9,8 +9,10 @@ CaM(ck), CaMKII(s) <-> CaM(ck!1), CaMKII(s!1) @ 10, 0.01
 
 CaM(ck!1), CaMKII(s~u!1) -> CaM(ck!1), CaMKII(s~p!1) @ 100
 
-CaMKII(s~p?) -> CaMKII(s~u) @ 0.005
+## Dephosphorylation of CaMKII
+CaMKII(s~p?) -> CaMKII(s~u) @ 0.01
 
+## Removal of CaM from the system
 CaM() -> @ 0.01
 
 ## Phosphorylation of stargazin by phosphorlylated CaMKII
