@@ -3,7 +3,10 @@
 %agent: stargazin(c~u~p)
 %agent: CaMKII(s~u~p)
 %agent: CaM(ck,ca)
-%agent: Ca(cam)
+%agent: Ca(x)
+%agent: PP3(ca)
+%agent: I1(pp3~u~p, pp1)
+%agent: PP1(i1)
 
 %var: 'CaFlux' 1000
 %var: 'kCa' 0
@@ -13,19 +16,33 @@
 Ca() -> @ 10
 
 ## Binding of CaM to Ca
-CaM(ca), Ca(cam) <-> CaM(ca!1), Ca(cam!1) @ 100, 0.1
+CaM(ca), Ca(x) <-> CaM(ca!1), Ca(x!1) @ 100, 0.1
 
 ## Phosphorylation of CaMKII by CaM
 CaM(ck,ca!_), CaMKII(s~u) <-> CaM(ck!1,ca!_), CaMKII(s~u!1) @ 20, 1
 CaM(ck!1,ca!_), CaMKII(s~u!1) -> CaM(ck!1,ca!_), CaMKII(s~p!1) @ 200
 CaM(ck!1,ca!_), CaMKII(s~p!1) -> CaM(ck,ca!_), CaMKII(s~p) @ 1000
 
-
-## Dephosphorylation of CaMKII
+## Spontaneous Dephosphorylation of CaMKII
 CaMKII(s~p?) -> CaMKII(s~u) @ 0.002
 
-## Removal of CaM from the system
-# CaM() -> @ 0.01
+## Binding of Ca to PP3 (Calcineurin)
+PP3(ca), Ca(x) <-> PP3(ca!1), Ca(x!1) @ 0.0001, 0.000001
+
+## Dephosphorylation of I1 by Ca.PP3
+I1(pp3~p), PP3(ca!1), Ca(x!1) -> I1(pp3~u), PP3(ca!1), Ca(x!1) @ 1
+
+## Spontaneous rephosphorylation (actually happens via PKA)
+I1(pp3~u) -> I1(pp3~p) @ 0.1
+
+## Unbinding of dephosphorylated I1 from PP1
+I1(pp3~u,pp1!1), PP1(i1!1) -> I1(pp3~u,pp1), PP1(i1) @ 10
+
+## Rebinding of phosphorylated I1 to PP1
+I1(pp3~p,pp1), PP1(i1) -> I1(pp3~p,pp1!1), PP1(i1!1) @ 0.01
+
+## Dephosphorylation of CaMKII by unbound PP1
+PP1(i1), CaMKII(s~p) -> PP1(i1), CaMKII(s~u) @ 0.1
 
 ## Phosphorylation of stargazin by phosphorlylated CaMKII
 CaMKII(s~p), stargazin(c~u) ->  CaMKII(s~p), stargazin(c~p) @ 0.0001
@@ -36,11 +53,16 @@ stargazin(c~p), PSD95(pdz1) <-> stargazin(c~p!1), PSD95(pdz1!1) @ 1, 0.005
 ## Binding of phosphorylated stargazin to PSD-93
 stargazin(c~p), PSD93(pdz1) <-> stargazin(c~p!1), PSD93(pdz1!1) @ 1, 0.01
 
-## Dephosphorylyation of unbound stargazin
+## Spontaneous Dephosphorylyation of unbound stargazin
 stargazin(c~p) -> stargazin(c~u) @ 0.02
 
+## PP1-facilitated dephosphorylation of stargazin
+## PP1(i1), stargazin(c~p) -> PP1(i1), stargazin(c~u) @ 0.05
+
+%init:   0 Ca()
 %init: 100 CaM()
-%init: 0 Ca()
+%init: 100 PP3()
+%init: 100 PP1(i1!1), I1(pp3~p, pp1!1)
 %init: 100 CaMKII(s~u) 
 %init:  10 stargazin() 
 %init:  10 PSD95() 
@@ -54,7 +76,8 @@ stargazin(c~p) -> stargazin(c~u) @ 0.02
 %var: 'Phos stargazin' |stargazin(c~p)|
 %var: 'stargazin-PSD95' |stargazin(c~p!1), PSD95(pdz1!1)|
 %obs: 'CaM' |CaM(ck)|
-%obs: 'Ca' |Ca(cam)|
+%obs: 'Ca' |Ca(x)|
+%obs: 'Active PP1' |PP1(i1)|
 
 %plot: 'Phos CaMKII'
 %plot: 'Phos stargazin'

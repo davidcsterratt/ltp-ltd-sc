@@ -25,7 +25,7 @@ plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
   # lines(dat$time, apply(select(dat, -time), 1, min), type='l', ylim=ylim)
 }
 
-run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=20) {
+run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10) {
   kasim <- lapply(1:n, function(x) {run.kasim(files=files, l=l, p=p)})
   stg.psd95 <- data.frame(time=kasim[[1]][,"[T]"]/60 - 20,
                           do.call(cbind,
@@ -35,8 +35,14 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=20) {
                            do.call(cbind,
                                    lapply(kasim,
                                           function(x) {return(x[,"Phos CaMKII"])})))
+  ActivePP1 <- data.frame(time=kasim[[1]][,"[T]"]/60 - 20,
+                           do.call(cbind,
+                                   lapply(kasim,
+                                          function(x) {return(x[,"Active PP1"])})))
 
-  return(list(kasim=kasim, stg.psd95=stg.psd95, PhosCaMKII=PhosCaMKII))
+  
+  return(list(kasim=kasim, stg.psd95=stg.psd95, PhosCaMKII=PhosCaMKII,
+              ActivePP1=ActivePP1))
 }
                        
 ## Plot simulations
@@ -69,6 +75,14 @@ par(mfcol=c(2, 2),
 plot.ts(sims.a$PhosCaMKII, ylab="#")
 plot.ts(sims.b$PhosCaMKII, ylab="#")
 plot.ts(sims.c$PhosCaMKII, ylab="#")
+
+x11()
+par(mfcol=c(2, 2),
+    mar=c(2.4, 3, 1.5, 0.5),
+    mgp=c(1.3, 0.4, 0))
+plot.ts(sims.a$ActivePP1, ylab="#")
+plot.ts(sims.b$ActivePP1, ylab="#")
+plot.ts(sims.c$ActivePP1, ylab="#")
 
 
 
