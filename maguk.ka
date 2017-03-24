@@ -2,18 +2,29 @@
 %agent: PSD93(pdz1, sh3, gk)
 %agent: stargazin(c~u~p)
 %agent: CaMKII(s~u~p)
-%agent: CaM(ck)
+%agent: CaM(ck,ca)
+%agent: Ca(cam)
+
+%var: 'CaFlux' 1000
+%var: 'kCa' 0
+
+## Entry of Calcium
+-> Ca() @ 'kCa'
+Ca() -> @ 10
+
+## Binding of CaM to Ca
+CaM(ca), Ca(cam) <-> CaM(ca!1), Ca(cam!1) @ 100, 0.1
 
 ## Phosphorylation of CaMKII by CaM
-CaM(ck), CaMKII(s) <-> CaM(ck!1), CaMKII(s!1) @ 10, 0.01
+CaM(ck,ca!_), CaMKII(s) <-> CaM(ck!1,ca!_), CaMKII(s!1) @ 10, 10
 
-CaM(ck!1), CaMKII(s~u!1) -> CaM(ck!1), CaMKII(s~p!1) @ 100
+CaM(ck!1,ca!_), CaMKII(s~u!1) -> CaM(ck!1,ca!_), CaMKII(s~p!1) @ 100
 
 ## Dephosphorylation of CaMKII
-CaMKII(s~p?) -> CaMKII(s~u) @ 0.01
+CaMKII(s~p?) -> CaMKII(s~u) @ 0.001
 
 ## Removal of CaM from the system
-CaM() -> @ 0.01
+# CaM() -> @ 0.01
 
 ## Phosphorylation of stargazin by phosphorlylated CaMKII
 CaMKII(s~p), stargazin(c~u) ->  CaMKII(s~p), stargazin(c~p) @ 0.0001
@@ -27,19 +38,22 @@ stargazin(c~p), PSD93(pdz1) <-> stargazin(c~p!1), PSD93(pdz1!1) @ 1, 0.01
 ## Dephosphorylyation of unbound stargazin
 stargazin(c~p) -> stargazin(c~u) @ 0.02
 
-%init: 0 CaM()
+%init: 100 CaM()
+%init: 0 Ca()
 %init: 100 CaMKII(s~u) 
 %init:  10 stargazin() 
 %init:  10 PSD95() 
 %init:  10 stargazin(c~p!1), PSD95(pdz1!1)
 
-%mod: [T] > 1200 do $ADD 10 CaM()
+%mod: ([T] > 1200) && ([T] < 1200 + 'TCa') do $UPDATE 'kCa' 1000
+%mod: [T] > (1200 + 'TCa') do $UPDATE 'kCa' 0
 
 %var: 'Phos CamKII' |CaMKII(s~p)|
 %obs: 'CaM-UnphosCamKII' |CaM(ck!1),CaMKII(s~u!1)|
 %var: 'Phos stargazin' |stargazin(c~p)|
 %var: 'stargazin-PSD95' |stargazin(c~p!1), PSD95(pdz1!1)|
 %obs: 'CaM' |CaM(ck)|
+%obs: 'Ca' |Ca(cam)|
 
 %plot: 'Phos CamKII'
 %plot: 'Phos stargazin'

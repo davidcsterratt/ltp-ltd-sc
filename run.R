@@ -24,13 +24,13 @@ plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5, ...) {
   # lines(dat$time, apply(select(dat, -time), 1, min), type='l', ylim=ylim)
 }
 
-run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=20) {
-  lapply(1:n, function(x) {run.kasim(files=files, l=l, p=p)})
-  stg.psd95 <- data.frame(time=sims[[1]][,"[T]"]/60 - 20,
-                       do.call(cbind,
-                               lapply(sims,
-                                      function(x) {return(x[,"stargazin-PSD95"])}))/10*100)
-  return(list(raw=raw, stg.psd95=stg.psd95))
+run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10) {
+  kasim <- lapply(1:n, function(x) {run.kasim(files=files, l=l, p=p)})
+  stg.psd95 <- data.frame(time=kasim[[1]][,"[T]"]/60 - 20,
+                          do.call(cbind,
+                                  lapply(kasim,
+                                         function(x) {return(x[,"stargazin-PSD95"])}))/10*100)
+  return(list(kasim=kasim, stg.psd95=stg.psd95))
 }
                        
 ## Plot simulations
@@ -40,17 +40,17 @@ par(mfcol=c(2, 2),
 
 ## Fig A - 5Hz/5 sec
 plot.ts(read.carletal("fig3a_wt.csv"), main="A: 5Hz/5 sec")
-sims.a <- run.kasims("maguk.ka", l=67*60, p=10)
+sims.a <- run.kasims(c("par-a.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.a$stg.psd95, add=TRUE, hue=0.5)
 
 ## Fig B - 5Hz/1 min
 plot.ts(read.carletal("fig3b_wt.csv"), main="B: 5Hz/15 sec")
-sims.b <- run.kasims("maguk.ka", l=67*60, p=10)
+sims.b <- run.kasims(c("par-b.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.b$stg.psd95, add=TRUE, hue=0.5)
 
 ## Fig C - 5Hz/15 second
 plot.ts(read.carletal("fig3c_wt.csv"), main="C: 5Hz/1 min")
-sims.c <- run.kasims("maguk.ka", l=67*60, p=10)
+sims.c <- run.kasims(c("par-c.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.c$stg.psd95, add=TRUE, hue=0.5)
 
 #matplot(select(dat, time), select(dat, -time), pch=19, ylim=c(0, 200))
