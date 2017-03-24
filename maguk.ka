@@ -16,12 +16,13 @@ Ca() -> @ 10
 CaM(ca), Ca(cam) <-> CaM(ca!1), Ca(cam!1) @ 100, 0.1
 
 ## Phosphorylation of CaMKII by CaM
-CaM(ck,ca!_), CaMKII(s) <-> CaM(ck!1,ca!_), CaMKII(s!1) @ 10, 10
+CaM(ck,ca!_), CaMKII(s~u) <-> CaM(ck!1,ca!_), CaMKII(s~u!1) @ 20, 1
+CaM(ck!1,ca!_), CaMKII(s~u!1) -> CaM(ck!1,ca!_), CaMKII(s~p!1) @ 200
+CaM(ck!1,ca!_), CaMKII(s~p!1) -> CaM(ck,ca!_), CaMKII(s~p) @ 1000
 
-CaM(ck!1,ca!_), CaMKII(s~u!1) -> CaM(ck!1,ca!_), CaMKII(s~p!1) @ 100
 
 ## Dephosphorylation of CaMKII
-CaMKII(s~p?) -> CaMKII(s~u) @ 0.001
+CaMKII(s~p?) -> CaMKII(s~u) @ 0.002
 
 ## Removal of CaM from the system
 # CaM() -> @ 0.01
