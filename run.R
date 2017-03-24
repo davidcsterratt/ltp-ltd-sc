@@ -8,11 +8,12 @@ read.carletal <- function(file="fig3a_wt.csv", dir="../../data/CarlEtal08oppo/")
                   ))
 }
 
-plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5, ...) {
+plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
+                    ylab="Strength (% Baseline)", ...) {
   if (!add) {
     plot(NA, NA, 
          xlim=range(dat$time), ylim=ylim,
-         xlab="Time (minutes)", ylab="Strength (% Baseline)", ...)
+         xlab="Time (minutes)", ylab=ylab, ...)
   }
   n <- length(dat$time)
   polygon(c(dat$time, dat$time[n:1]),
@@ -24,7 +25,7 @@ plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5, ...) {
   # lines(dat$time, apply(select(dat, -time), 1, min), type='l', ylim=ylim)
 }
 
-run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10) {
+run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=20) {
   kasim <- lapply(1:n, function(x) {run.kasim(files=files, l=l, p=p)})
   stg.psd95 <- data.frame(time=kasim[[1]][,"[T]"]/60 - 20,
                           do.call(cbind,
@@ -33,7 +34,7 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10) {
   PhosCaMKII <- data.frame(time=kasim[[1]][,"[T]"]/60 - 20,
                            do.call(cbind,
                                    lapply(kasim,
-                                          function(x) {return(x[,"Phos CaMKII"])}))/10*100)
+                                          function(x) {return(x[,"Phos CaMKII"])})))
 
   return(list(kasim=kasim, stg.psd95=stg.psd95, PhosCaMKII=PhosCaMKII))
 }
@@ -65,9 +66,9 @@ x11()
 par(mfcol=c(2, 2),
     mar=c(2.4, 3, 1.5, 0.5),
     mgp=c(1.3, 0.4, 0))
-plot.ts(sims.a$PhosCaMKII)
-plot.ts(sims.b$PhosCaMKII)
-plot.ts(sims.c$PhosCaMKII)
+plot.ts(sims.a$PhosCaMKII, ylab="#")
+plot.ts(sims.b$PhosCaMKII, ylab="#")
+plot.ts(sims.c$PhosCaMKII, ylab="#")
 
 
 
