@@ -1,9 +1,9 @@
 library(dplyr)
 
-source("../../KappaTutorial/kasim.R")
+source("kasim.R")
 options(kasim="KaSim")
 
-read.carletal <- function(file="fig3a_wt.csv", dir="../../data/CarlEtal08oppo/") {
+read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
   return(read.csv(file.path(dir, file), skip=1
                   ))
 }
