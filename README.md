@@ -18,5 +18,4 @@ How to run
 
 * Intall KaSim 4 from http://dev.executableknowledge.org/
 
-* Run the script =run.R= from within R using =source("run.R")=
-
+* Run the script `run.R` from within R using `source("run.R")`
