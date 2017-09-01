@@ -43,7 +43,6 @@ How to run
 
 * Run the script =run.R= from within R using =source("run.R")=
 
-
 <!--  LocalWords:  LTP PSD CaMII Carlisle Physiol CaMKII incoporated
  -->
 <!--  LocalWords:  Intall KaSim
