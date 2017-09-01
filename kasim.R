@@ -5,6 +5,8 @@ run.kasim <- function(files, l=1, p=0.01, u="time", cmd=getOption("kasim"),
   unlink(outfile, force=TRUE)
   system(paste(cmd, paste("-i", files, collapse=" "),
                "-l", l, "-p", p, "-u", u, "-o", outfile))
+  ## Don't try this in parallel!
+  unlink("inputs.ka")
   return(read.kasim(outfile))
 }
 
