@@ -1,7 +1,7 @@
 library(dplyr)
 
 source("kasim.R")
-options(kasim="/disk/scratch/sterratt/datastore/src/kappa/KaSim/KaSim")
+options(kasim="./KaSim/KaSim")
 
 read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
   return(read.csv(file.path(dir, file), skip=1
@@ -27,7 +27,8 @@ plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
 
 run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
                         record=c("stargazin-PSD95", "Phos CaMKII", "Active PP1")) {
-  kasim <- lapply(1:n, function(x) {run.kasim(files=files, l=l, p=p)})
+  kasim <- parallel::mclapply(1:n, function(x) {run.kasim(files=files, l=l, p=p,
+                                                          flags="--gluttony")})
 
   i <- which.max(sapply(kasim, function(x) { length(x[,"[T]"])} ))
   Tvec <- kasim[[i]][,"[T]"]
@@ -54,17 +55,17 @@ par(mfcol=c(2, 2),
 
 ## Fig A - 5Hz/5sec
 plot.ts(read.carletal("fig3a_wt.csv"), main="A: 5Hz/5sec")
-sims.a <- run.kasims(c("par-a.ka", "maguk4.ka"), l=67*60, p=10)
+sims.a <- run.kasims(c("par-a.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.a[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 
 ## Fig B - 5Hz/15sec
 plot.ts(read.carletal("fig3b_wt.csv"), main="B: 5Hz/15sec")
-sims.b <- run.kasims(c("par-b.ka", "maguk4.ka"), l=67*60, p=10)
+sims.b <- run.kasims(c("par-b.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.b[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 
 ## Fig C - 5Hz/1min
 plot.ts(read.carletal("fig3c_wt.csv"), main="C: 5Hz/1min")
-sims.c <- run.kasims(c("par-c.ka", "maguk4.ka"), l=67*60, p=10)
+sims.c <- run.kasims(c("par-c.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.c[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 ## dev.off()
 

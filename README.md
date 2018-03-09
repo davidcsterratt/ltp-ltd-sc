@@ -39,8 +39,22 @@ binding and CaMKII phosphorylation.
 How to run
 ----------
 
-* Install KaSim 4 from http://dev.executableknowledge.org/
+These instructions work for Ubuntu 16.04.
 
+* In this directory install the development version of KaSim 4 from
+27/3/2017 as
+follows:
+```
+apt install ocaml ocaml-findlib
+git clone https://github.com/jkrivine/KaSim.git
+git checkout 76a8b98d135177c49
+cd KaSim
+make
+```
+* Make sure that R is installed
+```
+apt install r-base
+```
 * Run the script =run.R= from within R using =source("run.R")=
 
 <!--  LocalWords:  LTP PSD CaMII Carlisle Physiol CaMKII incoporated

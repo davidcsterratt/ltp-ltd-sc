@@ -1,13 +1,24 @@
 options(kasim="c:/users/my_user_name/Documents/KappaBin_master/KappaBin/bin/KaSim.exe")
 
 run.kasim <- function(files, l=1, p=0.01, u="time", cmd=getOption("kasim"),
-                      outfile="data.csv") {
-  unlink(outfile, force=TRUE)
+                      outfile=NULL, flags=NULL) {
+  tdir <- NULL
+  if (is.null(outfile)) {
+    tdir <- tempfile("kasim")
+    dir.create(tdir)
+    outfile <- file.path(tdir, "data.csv")
+  } else {
+    unlink(outfile, force=TRUE)
+  }
   system(paste(cmd, paste("-i", files, collapse=" "),
-               "-l", l, "-p", p, "-u", u, "-o", outfile))
+               "-l", l, "-p", p, "-u", u, "-o", outfile,
+               ifelse(is.null(tdir), "", paste("-d", tdir)),
+               flags))
   ## Don't try this in parallel!
   unlink("inputs.ka")
-  return(read.kasim(outfile))
+  out <- read.kasim(outfile)
+  unlink(tdir, recursive=TRUE)
+  return(out)
 }
 
 read.kasim <- function(file="data.csv") {
