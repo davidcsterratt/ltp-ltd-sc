@@ -1,7 +1,14 @@
 library(dplyr)
 
 source("kasim.R")
-options(kasim="./KaSim/KaSim")
+## For version of 2017-03-24
+options(kasim="./KaSim/KaSim-76a8b98")
+kafile <- "maguk.ka"
+
+## For version of 2018-03-09
+## options(kasim="./KaSim/KaSim")
+## kafile <- "maguk4.ka"
+
 
 read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
   return(read.csv(file.path(dir, file), skip=1
@@ -26,7 +33,7 @@ plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
 }
 
 run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
-                        record=c("stargazin-PSD95", "Phos CaMKII", "Active PP1")) {
+                       record=c("stargazin-PSD95", "Phos CaMKII", "Active PP1")) {
   kasim <- parallel::mclapply(1:n, function(x) {run.kasim(files=files, l=l, p=p,
                                                           flags="--gluttony")})
 
@@ -47,50 +54,51 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
 }
 
 
+sims.a <- run.kasims(c("par-a.ka", kafile), l=67*60, p=10)
+sims.b <- run.kasims(c("par-b.ka", kafile), l=67*60, p=10)
+sims.c <- run.kasims(c("par-c.ka", kafile), l=67*60, p=10)
+
+
 ## Plot simulations
 ## png(file="stg-psd95.png", width=1000, height=800)
-par(mfcol=c(2, 2),
+par(mfcol=c(3, 3),
     mar=c(2.4, 3, 1.5, 0.5),
     mgp=c(1.3, 0.4, 0))
 
 ## Fig A - 5Hz/5sec
 plot.ts(read.carletal("fig3a_wt.csv"), main="A: 5Hz/5sec")
-sims.a <- run.kasims(c("par-a.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.a[["stargazin-PSD95"]], add=TRUE, hue=0.5)
+mtext("Stargazin-PSD95", line=2)
 
 ## Fig B - 5Hz/15sec
 plot.ts(read.carletal("fig3b_wt.csv"), main="B: 5Hz/15sec")
-sims.b <- run.kasims(c("par-b.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.b[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 
 ## Fig C - 5Hz/1min
 plot.ts(read.carletal("fig3c_wt.csv"), main="C: 5Hz/1min")
-sims.c <- run.kasims(c("par-c.ka", "maguk.ka"), l=67*60, p=10)
 plot.ts(sims.c[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 ## dev.off()
+## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
 
 #matplot(select(dat, time), select(dat, -time), pch=19, ylim=c(0, 200))
 # plot.kasim(sims[[1]])
 
-x11()
-par(mfcol=c(2, 2),
-    mar=c(2.4, 3, 1.5, 0.5),
-    mgp=c(1.3, 0.4, 0),
-    oma=c(0, 0, 2, 0))
-plot.ts(sims.a$PhosCaMKII, ylab="#", hue=0.5)
-plot.ts(sims.b$PhosCaMKII, ylab="#", hue=0.5)
-plot.ts(sims.c$PhosCaMKII, ylab="#", hue=0.5)
-mtext("PhosCaMKII", outer=TRUE)
+## x11()
+## par(mfcol=c(2, 4),
+##     mar=c(2.4, 3, 1.5, 0.5),
+##     mgp=c(1.3, 0.4, 0),
+##     oma=c(0, 0, 2, 0))
+plot.ts(sims.a[["Phos CaMKII"]], ylab="#", ylim=c(0, 1000), hue=0.5, main="5Hz/5sec")
+mtext("Phos CaMKII", line=2)
+plot.ts(sims.b[["Phos CaMKII"]], ylab="#", ylim=c(0, 1000), hue=0.5, main="5Hz/15sec")
+plot.ts(sims.c[["Phos CaMKII"]], ylab="#", ylim=c(0, 1000), hue=0.5, main="5Hz/1min")
+                                        ## mtext("PhosCaMKII", outer=TRUE)
+## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
 
-x11()
-par(mfcol=c(2, 2),
-    mar=c(2.4, 3, 1.5, 0.5),
-    mgp=c(1.3, 0.4, 0),
-    oma=c(0, 0, 2, 0))
-plot.ts(sims.a$ActivePP1, ylab="#", ylim=c(0,50), hue=0.5)
-plot.ts(sims.b$ActivePP1, ylab="#", ylim=c(0,50), hue=0.5)
-plot.ts(sims.c$ActivePP1, ylab="#", ylim=c(0,50), hue=0.5)
-mtext("ActivePP1", outer=TRUE)
+plot.ts(sims.a[["Active PP1"]], ylab="#", hue=0.5, main="5Hz/5sec")
+mtext("Active PP1", line=2)
+plot.ts(sims.b[["Active PP1"]], ylab="#", hue=0.5, main="5Hz/15sec")
+plot.ts(sims.c[["Active PP1"]], ylab="#", hue=0.5, main="5Hz/1min")
 
-
-# plot.ts(stg.psd95.sim, add=TRUE, hue=0.5)
+## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
+## mtext("ActivePP1", outer=TRUE)
