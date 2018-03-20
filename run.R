@@ -16,10 +16,13 @@ read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
 }
 
 plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
-                    ylab="Strength (% Baseline)", ...) {
+                    ylab="Strength (% Baseline)", xlim=NA, ...) {
+  if (is.na(xlim)) {
+    xlim <- range(dat$time)
+  }
   if (!add) {
     plot(NA, NA, 
-         xlim=range(dat$time), ylim=ylim,
+         xlim=xlim, ylim=ylim,
          xlab="Time (minutes)", ylab=ylab, ...)
   }
   n <- length(dat$time)
@@ -33,7 +36,7 @@ plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
 }
 
 run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
-                       record=c("stargazin-PSD95", "Phos CaMKII", "Active PP1")) {
+                       record=c("stargazin-PSD95"=100/15, "Phos CaMKII"=1, "Active PP1"=1, "PP3-Ca"=1, "Phos stargazin"=1)) {
   kasim <- parallel::mclapply(1:n, function(x) {run.kasim(files=files, l=l, p=p,
                                                           flags="--gluttony")})
 
@@ -42,26 +45,26 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
   N <- length(Tvec)
   
   out <- list(kasim=kasim)
-  for (r in record) {
+  for (r in names(record)) {
     out[[r]] <- data.frame(time=Tvec/60 - 20,
                            do.call(cbind,
                                    lapply(kasim,
                                           function(x) {
                                             return(c(x[,r], rep(NA, N - length(x[,r]))))
-                                          }))/10*100)
+                                          }))*record[r])
   }
   return(out)
 }
 
 
-sims.a <- run.kasims(c("par-a.ka", kafile), l=67*60, p=10)
-sims.b <- run.kasims(c("par-b.ka", kafile), l=67*60, p=10)
-sims.c <- run.kasims(c("par-c.ka", kafile), l=67*60, p=10)
+sims.a <- run.kasims(c("par-a.ka", kafile), l=67*60, p=1)
+sims.b <- run.kasims(c("par-b.ka", kafile), l=67*60, p=1)
+sims.c <- run.kasims(c("par-c.ka", kafile), l=67*60, p=1)
 
 
 ## Plot simulations
 ## png(file="stg-psd95.png", width=1000, height=800)
-par(mfcol=c(3, 3),
+par(mfcol=c(3, 5),
     mar=c(2.4, 3, 1.5, 0.5),
     mgp=c(1.3, 0.4, 0))
 
@@ -88,17 +91,28 @@ plot.ts(sims.c[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 ##     mar=c(2.4, 3, 1.5, 0.5),
 ##     mgp=c(1.3, 0.4, 0),
 ##     oma=c(0, 0, 2, 0))
-plot.ts(sims.a[["Phos CaMKII"]], ylab="#", ylim=c(0, 1000), hue=0.5, main="5Hz/5sec")
+plot.ts(sims.a[["Phos CaMKII"]], ylab="#", xlim=c(0, 3), ylim=c(0, 1000), hue=0.5, main="5Hz/5sec")
 mtext("Phos CaMKII", line=2)
-plot.ts(sims.b[["Phos CaMKII"]], ylab="#", ylim=c(0, 1000), hue=0.5, main="5Hz/15sec")
-plot.ts(sims.c[["Phos CaMKII"]], ylab="#", ylim=c(0, 1000), hue=0.5, main="5Hz/1min")
+plot.ts(sims.b[["Phos CaMKII"]], ylab="#", xlim=c(0, 3), ylim=c(0, 1000), hue=0.5, main="5Hz/15sec")
+plot.ts(sims.c[["Phos CaMKII"]], ylab="#", xlim=c(0, 3), ylim=c(0, 1000), hue=0.5, main="5Hz/1min")
                                         ## mtext("PhosCaMKII", outer=TRUE)
 ## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
 
-plot.ts(sims.a[["Active PP1"]], ylab="#", hue=0.5, main="5Hz/5sec")
+plot.ts(sims.a[["Active PP1"]], ylab="#", xlim=c(0, 3), ylim=c(0, 100), hue=0.5, main="5Hz/5sec")
 mtext("Active PP1", line=2)
-plot.ts(sims.b[["Active PP1"]], ylab="#", hue=0.5, main="5Hz/15sec")
-plot.ts(sims.c[["Active PP1"]], ylab="#", hue=0.5, main="5Hz/1min")
+plot.ts(sims.b[["Active PP1"]], ylab="#", xlim=c(0, 3), ylim=c(0, 100), hue=0.5, main="5Hz/15sec")
+plot.ts(sims.c[["Active PP1"]], ylab="#", xlim=c(0, 3), ylim=c(0, 100), hue=0.5, main="5Hz/1min")
+
+plot.ts(sims.a[["PP3-Ca"]], ylab="#", hue=0.5, xlim=c(0, 3), ylim=c(0, 20), main="5Hz/5sec")
+mtext("PP3-Ca", line=2)
+plot.ts(sims.b[["PP3-Ca"]], ylab="#", hue=0.5, xlim=c(0, 3), ylim=c(0, 20), main="5Hz/15sec")
+plot.ts(sims.c[["PP3-Ca"]], ylab="#", hue=0.5, xlim=c(0, 3), ylim=c(0, 20), main="5Hz/1min")
+
+plot.ts(sims.a[["Phos stargazin"]], ylab="#", hue=0.5, ylim=c(0, 20), main="5Hz/5sec")
+mtext("Phos stargazin", line=2)
+plot.ts(sims.b[["Phos stargazin"]], ylab="#", hue=0.5, ylim=c(0, 20), main="5Hz/15sec")
+plot.ts(sims.c[["Phos stargazin"]], ylab="#", hue=0.5, ylim=c(0, 20), main="5Hz/1min")
+
 
 ## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
 ## mtext("ActivePP1", outer=TRUE)

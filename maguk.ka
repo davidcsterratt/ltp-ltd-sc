@@ -78,10 +78,14 @@ stargazin(c~p) -> stargazin(c~u) @ 0.02
 %obs: 'CaM' |CaM(ck)|
 %obs: 'Ca' |Ca(x)|
 %obs: 'Active PP1' |PP1(i1)|
+%obs: 'PP3-Ca' |PP3(ca!1), Ca(x!1)|
 
 %plot: 'Phos CaMKII'
 %plot: 'Phos stargazin'
 %plot: 'stargazin-PSD95'
+%plot: 'PP3-Ca'
+
+
 
 # 'PDZ1_stargazin_PSD95'PSD95(pdz1,pdz2!_),stargazin(c~u) <-> PSD95(pdz1!0,pdz2!_),stargazin(c~u!0)  @ 0.00255390325543199 , 0.0381606323421001
 
