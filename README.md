@@ -44,7 +44,10 @@ These instructions work for Ubuntu 16.04.
 * In this directory install the development version of KaSim 4 from
 2017-03-24 as follows:
 ```
-apt install ocaml ocaml-findlib
+apt install ocaml opam
+opam init
+opam pin add --dev KaSim
+
 git clone https://github.com/jkrivine/KaSim.git
 git checkout 76a8b98d135177c49
 cd KaSim
