@@ -1,0 +1,32 @@
+##' Simulation of Ca influx
+##'
+##' According to [Sabatini & al, 2002], the amplitude of a spine transient following
+##' NMDAR stimulation is 0.7uM (at -70mV holding potential) or 12uM
+##' (at 0mV holiding potential). The buffer capacity kappab is about 20.
+##' Thus the total number of Ca ions entering per EPSP is
+##' vol * NA * [Ca] * kappab = 0.1e-15 * 6e23 * 0.7e-6 * 20 = 840
+##' vol * NA * [Ca] * kappab = 0.1e-15 * 6e23 * 12e-6 * 20  = 14400
+##' This gives a range of 840-14400 ions per impulse. At 5Hz
+##' (theta-burst stimulation) this makes the rate in the range of
+##' 4200-72000 ions per second.
+%agent: Ca(x)
+%var: 'CaFlux' 10000 # /s
+%var: 'kCa' 10
+
+## Entry of Calcium
+-> Ca() @ 'kCa'
+## Extrusion of calcium. The time constant of this is 12ms [Sabatini & al, 2002].
+Ca() -> @ 1/0.012 # /s
+
+%init:   0 Ca()
+
+%var: 'TCa' 0.1 # s
+%var: 'T0Ca' 0.1 #s
+%mod: ([T] > 'T0Ca') && ([T] < 'T0Ca' + 'TCa') do $UPDATE 'kCa' 'CaFlux'
+%mod: [T] > ('T0Ca' + 'TCa') do $UPDATE 'kCa' 1
+
+%var: 'Ca' |Ca(x)|
+%plot: 'Ca'
+
+##' References
+##' [Sabatini & al, 2002]() Sabatini, Oertner and Svoboda (2002). "The life cycle of Ca2+ Ions in dendritic spines". Neuron 33: 439-452

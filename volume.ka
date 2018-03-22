@@ -1,0 +1,10 @@
+##' Concentrations are meaured in mM by default
+##' The volume vol of a spine is assumed to be 0.1fl = 0.1E-15dm3 = 0.1um3 [Sabatini & al, 2002].
+%var: 'vol' 0.1 # um3
+##' Avagadro's constant
+%var: 'NA'  6.02205E23
+##' Concentration of one agent in the volume in mM 
+%var: 'agconc' 1E18/('NA' * 'vol')
+
+##' References
+##' [Sabatini & al, 2002]() Sabatini, Oertner and Svoboda (2002). "The life cycle of Ca2+ Ions in dendritic spines". Neuron 33: 439-452
