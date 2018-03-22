@@ -27,7 +27,7 @@ read.kasim <- function(file="data.csv") {
   header <- gsub("# ", "", header)
   header <- gsub("'", "", header)
   cmd <- header[1]
-  names <- strsplit(header[3], ", ")[[1]]
+  names <- strsplit(header[3], ", ?")[[1]]
   names <- gsub("\"", "", names)
   colnames(dat) <- names
   attr(dat, "cmd") <- cmd
