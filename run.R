@@ -11,28 +11,44 @@ kafile <- "maguk.ka"
 
 
 read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
-  return(read.csv(file.path(dir, file), skip=1
-                  ))
+  dat <- read.csv(file.path(dir, file), skip=1)
+  dat$time <- dat$time*60
+  return(dat)
 }
 
 plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
-                    ylab="Strength (% Baseline)", xlim=NA, ...) {
-  if (is.na(xlim)) {
-    xlim <- range(dat$time)
+                    ylab="Strength (% Baseline)", xlim=NA, time.units="min",
+                    offset=20, ...) {
+  Time <- dat$time
+  if (time.units == "min") {
+    Time <- Time/60
+  } else {
+    if (time.units != "s") {
+      stop("time.units must be min or s")
+    }
+  }
+  Time <- Time - offset
+  if (is.na(xlim[1])) {
+    xlim <- range(Time)
   }
   if (!add) {
     plot(NA, NA, 
          xlim=xlim, ylim=ylim,
-         xlab="Time (minutes)", ylab=ylab, ...)
+         xlab=paste0("Time (", time.units, ")"), ylab=ylab, ...)
+    if (!is.null(attr(dat, "agconc"))) {
+      ticklabs <- axisTicks(ylim*attr(dat, "agconc")*1000, log=FALSE)
+      axis(4, at=ticklabs/attr(dat, "agconc")/1000, labels=ticklabs)
+      mtext("uM", side=4, line=1, cex=0.66)
+    }
   }
-  n <- length(dat$time)
-  polygon(c(dat$time, dat$time[n:1]),
+  n <- length(Time)
+  polygon(c(Time, Time[n:1]),
           c(apply(select(dat, -time), 1, max),
             apply(select(dat, -time), 1, min)[n:1]),
           col=hsv(hue, 0.5, 1, alpha), border=hsv(hue, 1, 1, alpha))
-  lines(dat$time, rowMeans(select(dat, -time), na.rm=TRUE), col=hsv(hue, 1, 0.5))
+  lines(Time, rowMeans(select(dat, -time), na.rm=TRUE), col=hsv(hue, 1, 0.5))
   #lines(, apply(select(dat, -time), 1, max), type='l', ylim=ylim)
-  # lines(dat$time, apply(select(dat, -time), 1, min), type='l', ylim=ylim)
+  # lines(Time, apply(select(dat, -time), 1, min), type='l', ylim=ylim)
 }
 
 run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
@@ -45,13 +61,19 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
   N <- length(Tvec)
   
   out <- list(kasim=kasim)
+  if ("agconc" %in% names(kasim[[1]])) {
+    out$agconc <- kasim[[1]][1,"agconc"]
+  }
   for (r in names(record)) {
-    out[[r]] <- data.frame(time=Tvec/60 - 20,
+    out[[r]] <- data.frame(time=Tvec,
                            do.call(cbind,
                                    lapply(kasim,
                                           function(x) {
                                             return(c(x[,r], rep(NA, N - length(x[,r]))))
                                           }))*record[r])
+    if (!is.null(out$agconc)) {
+      attr(out[[r]], "agconc") <- out$agconc
+    }
   }
   return(out)
 }

@@ -20,16 +20,16 @@ par(mfcol=c(3, 5),
     mgp=c(1.3, 0.4, 0))
 
 ## Fig A - 5Hz/5sec
-plot.ts(read.carletal("fig3a_wt.csv"), main="A: 5Hz/5sec")
+plot.ts(read.carletal("fig3a_wt.csv"), main="A: 5Hz/5sec", offset=0)
 plot.ts(sims.a[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 mtext("Stargazin-PSD95", line=2)
 
 ## Fig B - 5Hz/15sec
-plot.ts(read.carletal("fig3b_wt.csv"), main="B: 5Hz/15sec")
+plot.ts(read.carletal("fig3b_wt.csv"), main="B: 5Hz/15sec", offset=0)
 plot.ts(sims.b[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 
 ## Fig C - 5Hz/1min
-plot.ts(read.carletal("fig3c_wt.csv"), main="C: 5Hz/1min")
+plot.ts(read.carletal("fig3c_wt.csv"), main="C: 5Hz/1min", offset=0)
 plot.ts(sims.c[["stargazin-PSD95"]], add=TRUE, hue=0.5)
 ## dev.off()
 ## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
