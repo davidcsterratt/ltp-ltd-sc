@@ -6,7 +6,7 @@ options(kasim="./KaSim/KaSim-76a8b98")
 ## For version of 2018-03-09
 options(kasim="./KaSim/KaSim")
 
-sims <- run.kasims(c("volume4.ka", "ca4.ka"), record=c("Ca"=1, "kCa"=1), l=1, p=0.001, n=1)
+sims <- run.kasims(c("volume4.ka", "agents4.ka", "ca4.ka"), record=c("Ca"=1, "kCa"=1), l=1, p=0.001, n=1)
 
 ## Plot simulations
 ## png(file="stg-psd95.png", width=1000, height=800)
