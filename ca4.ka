@@ -1,0 +1,48 @@
+//' Simulation of Ca influx
+//'
+//' According to [Sabatini & al, 2002], the amplitude of a spine transient following
+//' NMDAR stimulation is 0.7uM (at -70mV holding potential) or 12uM
+//' (at 0mV holiding potential). The buffer capacity kappab is about 20.
+//' Thus the total number of Ca ions entering per EPSP is
+//' vol * NA * [Ca] * kappab = 0.1e-15 * 6e23 * 0.7e-6 * 20 = 840
+//' vol * NA * [Ca] * kappab = 0.1e-15 * 6e23 * 12e-6 * 20  = 14400
+//' This gives a range of 840-14400 ions per impulse. At 5Hz
+//' (theta-burst stimulation) this makes the rate in the range of
+//' 4200-72000 ions per second.
+
+//' In the simulations of [Stefan & Le Novère, 2012], the number of Ca
+//' ions entering was estimated to be 34560. They suggest a pulse
+//' duration of Ca entry of 8ms. We choose 50ms to be more similar
+//' to the duration of an NMDAR EPSC.
+
+%agent: Ca(x)
+%var: 'durpulse' 0.050 // s
+%var: 'CaFlux' 14400/'durpulse' // /s
+%var: 'kCa' 0
+%var: 'npulse' 4
+
+// Entry of Calcium
+. -> Ca() @ 'kCa'
+// Extrusion of calcium. The time constant of this is 12ms [Sabatini & al, 2002].
+Ca() -> . @ 1/0.012 // /s
+
+%init:   0 Ca()
+
+%var: '_tpulse' 0
+
+%mod: alarm 0.2 [not] ([T] = 0) && ('npulse' > 0) do $PRINT "T=".[T]."; npulse=".'npulse' ; $UPDATE 'npulse' 'npulse' - 1; $UPDATE '_tpulse' [T]; $UPDATE 'kCa' 'CaFlux'; repeat [true]
+%mod: ([T] > '_tpulse' + 'durpulse') do $UPDATE 'kCa' 0;  repeat [true]
+
+%var: 'Ca' |Ca(x)|
+%plot: 'Ca'
+%plot: 'kCa'
+%plot: 'agconc'
+
+//' References
+
+//' [Sabatini & al, 2002]() Sabatini, Oertner and Svoboda (2002). "The
+//' life cycle of Ca2+ Ions in dendritic spines". Neuron 33: 439-452
+
+//' [Stefan & Le Novère, 2012]() Stefan & Le Novère (2012). "Calcium
+//' input frequency, duration and amplitude differentially modulate the
+//' relative activation of calcineurin and CaMKII". PLoS ONE 7:e43810
