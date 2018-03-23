@@ -16,9 +16,12 @@ read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
   return(dat)
 }
 
-plot.ts <- function(dat, ylim=c(0, 200), add=FALSE, hue=1, alpha=0.5,
+plot.ts <- function(dat, ylim=NULL, add=FALSE, hue=1, alpha=0.5,
                     ylab="Strength (% Baseline)", xlim=NA, time.units="min",
                     offset=20, ...) {
+  if (is.null(ylim)) {
+    ylim <- range(select(dat, -time))
+  }
   Time <- dat$time
   if (time.units == "min") {
     Time <- Time/60
