@@ -33,7 +33,9 @@ Ca(x[.]) -> . @ 1/0.012 // /s
 %mod: ([T] > '_tpulse' + 'durpulse') do $UPDATE 'kCa' 0;  repeat [true]
 
 %var: 'Ca' |Ca(x[.])|
+%var: 'TotCa' |Ca()|
 %plot: 'Ca'
+%plot: 'TotCa'
 %plot: 'kCa'
 %plot: 'agconc'
 

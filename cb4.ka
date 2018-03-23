@@ -1,0 +1,20 @@
+//' This is the model due to [Fass & al, 2011]
+
+//' Abundance
+%init: 0.03/'agconc' CB()
+
+%var: 'cbfac' 1E-1
+%var: 'kCBon'  'cbfac'* 7.5E4  // /mM/s
+%var: 'kCBoff' 'cbfac'*29.5E0  // /s
+'Ca_CB1'       Ca(x[.]), CB(ca1[.]) <-> Ca(x[1]), CB(ca1[1])  @ 'kCBon'*'agconc', 'kCBoff'
+'Ca_CB2'       Ca(x[.]), CB(ca2[.]) <-> Ca(x[1]), CB(ca2[1])  @ 'kCBon'*'agconc', 'kCBoff'
+'Ca_CB3'       Ca(x[.]), CB(ca3[.]) <-> Ca(x[1]), CB(ca3[1])  @ 'kCBon'*'agconc', 'kCBoff'
+'Ca_CB4'       Ca(x[.]), CB(ca4[.]) <-> Ca(x[1]), CB(ca4[1])  @ 'kCBon'*'agconc', 'kCBoff'
+
+%var: 'CB' |CB(ca1[.],ca2[.],ca3[.],ca4[.])|
+%plot: 'CB'
+
+//' References
+
+//' [Faas & al, 2022]() Faas, R (2011). "Calmodulin as direct detector of Ca2+ signals".
+//' Nat. Neurosci. 14:301-306
