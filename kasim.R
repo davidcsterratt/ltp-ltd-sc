@@ -1,6 +1,7 @@
 options(kasim="c:/users/my_user_name/Documents/KappaBin_master/KappaBin/bin/KaSim.exe")
 
 run.kasim <- function(files, l=1, p=0.01, u="time", cmd=getOption("kasim"),
+                      vars=c(),
                       outfile=NULL, flags=NULL) {
   tdir <- NULL
   if (is.null(outfile)) {
@@ -10,10 +11,18 @@ run.kasim <- function(files, l=1, p=0.01, u="time", cmd=getOption("kasim"),
   } else {
     unlink(outfile, force=TRUE)
   }
-  system(paste(cmd, paste("-i", files, collapse=" "),
-               "-l", l, "-p", p, "-u", u, "-o", outfile,
-               ifelse(is.null(tdir), "", paste("-d", tdir)),
-               flags))
+  varstr <- ""
+  if (length(vars) > 0) {
+    varstr <- paste(rbind("-var", rbind(names(vars), vars)), collapse=" ")
+    print(varstr)
+  }
+  callstr <- paste(cmd, paste("-i", files, collapse=" "),
+                   "-l", l, "-p", p, "-u", u, varstr,
+                   "-o", outfile,
+                   ifelse(is.null(tdir), "", paste("-d", tdir)),
+                   flags)
+  print(callstr)
+  system(callstr)
   ## Don't try this in parallel!
   unlink("inputs.ka")
   out <- read.kasim(outfile)

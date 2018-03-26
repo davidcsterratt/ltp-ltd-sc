@@ -55,8 +55,9 @@ plot.ts <- function(dat, ylim=NULL, add=FALSE, hue=1, alpha=0.5,
 }
 
 run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
-                       record=c("stargazin-PSD95"=100/15, "Phos CaMKII"=1, "Active PP1"=1, "PP3-Ca"=1, "Phos stargazin"=1)) {
-  kasim <- parallel::mclapply(1:n, function(x) {run.kasim(files=files, l=l, p=p,
+                       record=c("stargazin-PSD95"=100/15, "Phos CaMKII"=1, "Active PP1"=1, "PP3-Ca"=1, "Phos stargazin"=1),
+                       vars=c()) {
+  kasim <- parallel::mclapply(1:n, function(x) {run.kasim(files=files, l=l, p=p, vars=vars,
                                                           flags="--gluttony")})
 
   i <- which.max(sapply(kasim, function(x) { length(x[,"[T]"])} ))
