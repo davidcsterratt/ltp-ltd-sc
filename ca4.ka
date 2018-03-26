@@ -16,9 +16,9 @@
 //' to the duration of an NMDAR EPSC.
 
 %var: 'durpulse' 0.050 // s
-%var: 'CaFlux' 14400/'durpulse' // /s
+%var: 'CaFlux' 700/'durpulse' // /s
 %var: 'kCa' 0
-%var: 'npulse' 4
+%var: 'npulse' 15//300// 75 // 300 // 75 // 25
 
 // Entry of Calcium
 . -> Ca() @ 'kCa'

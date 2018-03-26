@@ -2,25 +2,29 @@
 
 //' Abundance
 %init: 0.03/'agconc' CaM()
-//' Slow-down factor; needed to make simulations run slower
+//' Slow-down factor; needed to make simulations run faster
 %var: 'fac' 1E-1 
 
 //' Binding of Ca to N lobe of Calmodoulin
 %var: 'k1Non'  'fac'*7.7E5 // /mM/s
 %var: 'k1Noff' 'fac'*1.6E5 // /s
 'Ca_CaMN1'      Ca(x[.]), CaM(n1[.],n2[.],ck[.]) <-> Ca(x[1]), CaM(n1[1],n2[.],ck[.]) @ 2*'k1Non'*'agconc', 'k1Noff'
+//'Ca_CaMN1'      Ca(x[.]), CaM(n1[.],n2[.]) <-> Ca(x[1]), CaM(n1[1],n2[.]) @ 2*'k1Non'*'agconc', 'k1Noff'
 %var: 'k2Non'  'fac'*3.2E7 // /mM/s
 %var: 'k2Noff' 'fac'*2.2E4 // /s
 'Ca_CaMN2'      Ca(x[.]), CaM(n1[_],n2[.],ck[.]) <-> Ca(x[1]), CaM(n1[_],n2[1],ck[.]) @   'k2Non'*'agconc', 2*'k2Noff'
+//'Ca_CaMN2'      Ca(x[.]), CaM(n1[_],n2[.]) <-> Ca(x[1]), CaM(n1[_],n2[1]) @   'k2Non'*'agconc', 2*'k2Noff'
 
 //' Binding of Ca to C lobe of Calmodulin
 
 %var: 'k1Con'  'fac'*8.4E4
 %var: 'k1Coff' 'fac'*2.6E3
 'k1C'           Ca(x[.]), CaM(c1[.],c2[.],ck[.]) <-> Ca(x[1]), CaM(c1[1],c2[.],ck[.]) @ 2*'k1Con'*'agconc', 'k1Coff'
+// 'k1C'           Ca(x[.]), CaM(c1[.],c2[.]) <-> Ca(x[1]), CaM(c1[1],c2[.]) @ 2*'k1Con'*'agconc', 'k1Coff'
 %var: 'k2Con'  'fac'*2.5E4
 %var: 'k2Coff' 'fac'*6.4E0
 'k2C'           Ca(x[.]), CaM(c1[_],c2[.],ck[.]) <-> Ca(x[1]), CaM(c1[_],c2[1],ck[.]) @   'k2Con'*'agconc', 2*'k2Coff'
+// 'k2C'           Ca(x[.]), CaM(c1[_],c2[.]) <-> Ca(x[1]), CaM(c1[_],c2[1]) @   'k2Con'*'agconc', 2*'k2Coff'
 
 
 %var: 'CaM' |CaM(n1[.],c1[.])|

@@ -1,0 +1,19 @@
+%init: 30 PP1(i1[1]), I1(pp3{p}, pp1[1])
+
+// Dephosphorylation of I1 by Ca.PP3
+I1(pp3{p}), PP3(ca[1]), Ca(x[1]) -> I1(pp3{u}), PP3(ca[1]), Ca(x[1]) @ 0.01
+
+// Spontaneous rephosphorylation (actually happens via PKA)
+I1(pp3{u}) -> I1(pp3{p}) @ 0.1
+
+// Unbinding of dephosphorylated I1 from PP1
+I1(pp3{u},pp1[1]), PP1(i1[1]) -> I1(pp3{u},pp1[.]), PP1(i1[.]) @ 0.1
+
+// Rebinding of phosphorylated I1 to PP1
+I1(pp3{p},pp1[.]), PP1(i1[.]) -> I1(pp3{p},pp1[1]), PP1(i1[1]) @ 0.001
+
+// Dephosphorylation of CaMKII by unbound PP1
+PP1(i1[.]), CaMKII(s{p}) -> PP1(i1[.]), CaMKII(s{u}) @ 0.04
+
+%var: 'PP1' |PP1(i1[.])|
+%plot: 'PP1'

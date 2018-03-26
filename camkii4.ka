@@ -1,0 +1,35 @@
+//' Ring model of CaMKII
+
+//' [Peterson & al., 2003] estimates number of CaMKII dodecameric holoenzymes to be 30. Make this
+//' 60 hexamers
+
+%init: 60 CaMKII(a[1],b[2]), CaMKII(a[2],b[3]), CaMKII(a[3],b[4]), CaMKII(a[4],b[5]), CaMKII(a[5],b[6]), CaMKII(a[6],b[1])
+
+// Phosphorylation of CaMKII by CaM - the critical for controlling how quickly CaM phosphorolates
+%var: 'kf_camkii_cam' 20
+CaM(ck[.],n1[_],n2[_],c1[_],c2[_]), CaMKII(cam[.]) <-> CaM(ck[1],n1[_],n2[_],c1[_],c2[_]), CaMKII(cam[1]) @ 'kf_camkii_cam'*0.14, 'kf_camkii_cam'*0.13
+
+CaM(ck[1]), CaM(ck[2]), CaMKII(cam[1],s{u},a[3]), CaMKII(cam[2],s{u},b[3])  ->  
+CaM(ck[1]), CaM(ck[2]), CaMKII(cam[1],s{u},a[3]), CaMKII(cam[2],s{p},b[3]) @ 120
+
+// Auto phosphorylation of CaMKII
+CaM(ck[1]), CaMKII(cam[.],s{p},a[2]), CaMKII(cam[1],s{u},b[2])  ->  
+CaM(ck[1]), CaMKII(cam[.],s{p},a[2]), CaMKII(cam[1],s{p},b[2]) @ 120
+
+// Auto phosphorylation of CaMKII - happens at slower rate with no CaM bound
+CaMKII(cam[.],s{p},a[1]), CaMKII(cam[.],s{u},b[1])  ->  
+CaMKII(cam[.],s{p},a[1]), CaMKII(cam[.],s{p},b[1]) @ 5
+
+%var: 'CaMKIIp' |CaMKII(s{p})|
+%var: 'CaMKIICaM' |CaM(ck[1]),  CaMKII(cam[1])|
+%var: 'CaMKIICaMCa4' |CaM(ck[1],n1[_],n2[_],c1[_],c2[_]), CaMKII(cam[1])|
+%var: 'CaMKIIhexp' |CaMKII(a[1],b[2],s{p}), CaMKII(a[2],b[3],s{p}), CaMKII(a[3],b[4],s{p}), CaMKII(a[4],b[5],s{p}), CaMKII(a[5],b[6],s{p}), CaMKII(a[6],b[1],s{p})|/6
+%plot: 'CaMKIIp'
+%plot: 'CaMKIIhexp'
+%plot: 'CaMKIICaM'
+%plot: 'CaMKIICaMCa4'
+
+//' References
+//'[Peterson & al., 2003] Petersen, Chen, Vinade,
+//' Dosemeci, Lisman and Reese. "Distribution of postsynaptic density (PSD)-95 and
+//' Ca2+/calmodulin-dependent protein kinase II at the PSD", J. Neurosci 23:11270-11278

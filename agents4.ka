@@ -1,3 +1,7 @@
 %agent: Ca(x)
 %agent: CaM(ck, n1, n2, c1, c2)
 %agent: CB(ca1, ca2, ca3, ca4)
+%agent: CaMKII(a, b, cam, s{u p})
+%agent: I1(pp3{u p}, pp1)
+%agent: PP1(i1)
+%agent: PP3(ca)

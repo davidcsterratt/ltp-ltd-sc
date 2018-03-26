@@ -1,0 +1,24 @@
+// Dephosphorylation of CaMKII by unbound PP1
+PP1(i1[.]), CaMKII(s{p}) -> PP1(i1[.]), CaMKII(s{u}) @ 0.02
+
+%init: 30 PP1(i1[.]) 
+
+%var: 'durpulse' 0.05 // s
+%var: 'CaFlux' 140/'durpulse' // /s
+%var: 'kCa' 0
+%var: 'npulse' 25 // 75 // 25 // 300
+
+// Entry of Calcium
+.,.,.,.,. -> CaM(ck[.],n1[1],n2[2],c1[3],c2[4]),Ca(x[1]),Ca(x[2]),Ca(x[3]),Ca(x[4]) @ 'kCa'
+// Extrusion of calcium. The time constant of this is 12ms [Sabatini & al, 2002].
+ CaM(n1[1],n2[2],c1[3],c2[4]),Ca(x[1]),Ca(x[2]),Ca(x[3]),Ca(x[4]) -> .,.,.,.,. @ 1/0.012 // /s
+
+%init:   0  CaM(n1[1],n2[2],c1[3],c2[4]),Ca(x[1]),Ca(x[2]),Ca(x[3]),Ca(x[4])
+
+%var: '_tpulse' 0
+
+%mod: alarm 0.2 [not] ([T] = 0) && ('npulse' > 0) do $PRINT "T=".[T]."; npulse=".'npulse' ; $UPDATE 'npulse' 'npulse' - 1; $UPDATE '_tpulse' [T]; $UPDATE 'kCa' 'CaFlux'; repeat [true]
+%mod: ([T] > '_tpulse' + 'durpulse') do $UPDATE 'kCa' 0;  repeat [true]
+
+%var: 'CaMCa4' |CaM(n1[1],n2[2],c1[3],c2[4]),Ca(x[1]),Ca(x[2]),Ca(x[3]),Ca(x[4])|
+%plot: 'CaMCa4'
