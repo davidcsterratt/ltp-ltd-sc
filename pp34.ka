@@ -2,7 +2,7 @@
 %init: 0.03/'agconc' PP3()
 
 // Binding of Ca to PP3 (Calcineurin)
-PP3(ca[.]), Ca(x[.]) <-> PP3(ca[1]), Ca(x[1]) @ 7.7E-4, 1.6E-4
+PP3(ca[.]), Ca(x[.]) <-> PP3(ca[1]), Ca(x[1]) @ 7.7E-4, 1.6E-5
 
 %var: 'CaPP3' |PP3(ca[1]), Ca(x[1])|
 %plot: 'CaPP3'
