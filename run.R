@@ -20,7 +20,7 @@ plot.ts <- function(dat, ylim=NULL, add=FALSE, hue=1, alpha=0.5,
                     ylab="Strength (% Baseline)", xlim=NA, time.units="min",
                     offset=20, ...) {
   if (is.null(ylim)) {
-    ylim <- range(select(dat, -time))
+    ylim <- range(na.omit(select(dat, -time)))
   }
   Time <- dat$time
   if (time.units == "min") {
@@ -68,12 +68,16 @@ run.kasims <- function(files="maguk.ka", l=67*60, p=10, n=10,
     out$agconc <- kasim[[1]][1,"agconc"]
   }
   for (r in names(record)) {
-    out[[r]] <- data.frame(time=Tvec,
-                           do.call(cbind,
-                                   lapply(kasim,
-                                          function(x) {
-                                            return(c(x[,r], rep(NA, N - length(x[,r]))))
-                                          }))*record[r])
+    if (!(r %in% colnames(kasim[[1]]))) {
+      warning(paste(r, "was not recorded during simulations"))
+    } else {
+      out[[r]] <- data.frame(time=Tvec,
+                             do.call(cbind,
+                                     lapply(kasim,
+                                            function(x) {
+                                              return(c(x[,r], rep(NA, N - length(x[,r]))))
+                                            }))*record[r])
+    }
     if (!is.null(out$agconc)) {
       attr(out[[r]], "agconc") <- out$agconc
     }
