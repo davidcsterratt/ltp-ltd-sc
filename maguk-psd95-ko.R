@@ -97,7 +97,7 @@ plot.ts(sims.c[["PP1"]],ylab="#", hue=0.5, xlim=c(0, tstop), ylim=CaPP1lim, main
 x11()
 
 ## Plot simulations
-## png(file="stg-psd95.png", width=1000, height=800)
+## png(file="stg-psd95-ko.png", width=1000, height=800)
 par(mfcol=c(3, 2),
     mar=c(2.4, 3, 1.5, 0.5),
     mgp=c(1.3, 0.4, 0))
@@ -121,16 +121,16 @@ plot.ts(sims.c[["stargazinPSD95"]], add=TRUE, hue=0.5, , scale=100/16.5)
 ## png(file="stg-psd95.png", width=1000, height=800)
 
 ## Fig D - 5Hz/5sec
-plot.ts(read.carletal("fig3a_psd-95_mutant.csv"), main="A: 5Hz/5sec", offset=0, ylim=c(0, 400))
+plot.ts(read.carletal("fig3a_psd-95_mutant.csv"), main="D: 5Hz/5sec", offset=0, ylim=c(0, 400))
 plot.ts(sims.d[["stargazinPSD93"]], add=TRUE, hue=0.5, offset=20, scale=100/10)
 mtext("StargazinPSD93", line=2)
 
 ## Fig E - 5Hz/15sec
-plot.ts(read.carletal("fig3b_psd-95_mutant.csv"), main="B: 5Hz/15sec", offset=0, ylim=c(0, 400))
+plot.ts(read.carletal("fig3b_psd-95_mutant.csv"), main="E: 5Hz/15sec", offset=0, ylim=c(0, 400))
 plot.ts(sims.e[["stargazinPSD93"]], add=TRUE, hue=0.5, scale=100/10)
 
 ## Fig F - 5Hz/1min
-plot.ts(read.carletal("fig3c_psd-95_mutant.csv"), main="C: 5Hz/1min", offset=0, ylim=c(0, 400))
+plot.ts(read.carletal("fig3c_psd-95_mutant.csv"), main="F: 5Hz/1min", offset=0, ylim=c(0, 400))
 plot.ts(sims.f[["stargazinPSD93"]], add=TRUE, hue=0.5, scale=100/10)
 ## dev.off()
-## plot(NA, NA, xlab="", ylab="", xaxt="", yaxt="")
+
