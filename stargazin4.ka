@@ -1,0 +1,23 @@
+%var: 'nPSD95' 10
+%init:  10 stargazin() 
+%init:  'nPSD95' PSD95() 
+%init:  'nPSD95' stargazin(c{p}[1]), PSD95(pdz1[1])
+%init:  10 PSD93() 
+%init:  10 stargazin(c{p}[1]), PSD93(pdz1[1])
+
+// Phosphorylation of stargazin by phosphorlylated CaMKII
+CaMKII(s{p}), stargazin(c{u}) ->  CaMKII(s{p}), stargazin(c{p}) @ 0.0001
+
+// Binding of phosphorylated stargazin to PSD-95
+stargazin(c{p}[.]), PSD95(pdz1[.]) <-> stargazin(c{p}[1]), PSD95(pdz1[1]) @ 1, 0.005
+
+// Binding of phosphorylated stargazin to PSD-93
+stargazin(c{p}[.]), PSD93(pdz1[.]) <-> stargazin(c{p}[1]), PSD93(pdz1[1]) @ 0.1, 0.01
+
+// Spontaneous Dephosphorylyation of unbound stargazin
+stargazin(c{p}[.]) -> stargazin(c{u}[.]) @ 0.02
+
+%var: 'stargazinPSD95' |stargazin(c{p}[1]), PSD95(pdz1[1])|
+%var: 'stargazinPSD93' |stargazin(c{p}[1]), PSD93(pdz1[1])|
+%plot: 'stargazinPSD95'
+%plot: 'stargazinPSD93'
