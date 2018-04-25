@@ -10,7 +10,7 @@ kafile <- "maguk.ka"
 ## kafile <- "maguk4.ka"
 
 
-read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
+read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo") {
   dat <- read.csv(file.path(dir, file), skip=1)
   dat$time <- dat$time*60
   return(dat)
@@ -18,12 +18,13 @@ read.carletal <- function(file="fig3a_wt.csv", dir="CarlEtal08oppo/") {
 
 plot.ts <- function(dat, ylim=NULL, add=FALSE, hue=1, alpha=0.5,
                     ylab="Strength (% Baseline)", xlim=NA, time.units="min",
-                    offset=20, ...) {
+                    offset=20, scale=1, ...) {
   if (is.null(ylim)) {
     ylim <- range(na.omit(select(dat, -time)))
   }
   Time <- dat$time
   if (time.units == "min") {
+    message("Time uints are minutes")
     Time <- Time/60
   } else {
     if (time.units != "s") {
@@ -46,10 +47,10 @@ plot.ts <- function(dat, ylim=NULL, add=FALSE, hue=1, alpha=0.5,
   }
   n <- length(Time)
   polygon(c(Time, Time[n:1]),
-          c(apply(select(dat, -time), 1, max),
+          scale*c(apply(select(dat, -time), 1, max),
             apply(select(dat, -time), 1, min)[n:1]),
           col=hsv(hue, 0.5, 1, alpha), border=hsv(hue, 1, 1, alpha))
-  lines(Time, rowMeans(select(dat, -time), na.rm=TRUE), col=hsv(hue, 1, 0.5))
+  lines(Time, scale*rowMeans(select(dat, -time), na.rm=TRUE), col=hsv(hue, 1, 0.5))
   #lines(, apply(select(dat, -time), 1, max), type='l', ylim=ylim)
   # lines(Time, apply(select(dat, -time), 1, min), type='l', ylim=ylim)
 }
