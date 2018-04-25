@@ -5,3 +5,6 @@
 %agent: I1(pp3{u p}, pp1)
 %agent: PP1(i1)
 %agent: PP3(ca)
+%agent: PSD95(pdz1, sh3, gk)
+%agent: PSD93(pdz1, sh3, gk)
+%agent: stargazin(c{u p})
