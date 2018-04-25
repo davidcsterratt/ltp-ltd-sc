@@ -60,8 +60,7 @@ apt install r-base
 R
 install.packages("dplyr")
 ```
-* Run the script =maguk-psd95-ko.R= from within R using =source("maguk-psd95-ko.R")=
-
+* Run the script `maguk-psd95-ko.R` from within R using `source("maguk-psd95-ko.R")`
 <!--  LocalWords:  LTP PSD CaMII Carlisle Physiol CaMKII incoporated
  -->
 <!--  LocalWords:  Intall KaSim ka cb camkii hexameric ocaml opam dev
